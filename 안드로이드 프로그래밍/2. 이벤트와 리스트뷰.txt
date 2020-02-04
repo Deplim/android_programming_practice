@@ -1,0 +1,586 @@
+<안드로이드 프로그래밍>
+
+2. 이벤트와 리스트뷰
+
+이벤트가 무엇인지는 웹 프로그래밍에서의 이벤트 개념과 동일
+
+* 리스트 뷰는 많이 쓰이기 때문에 잘 알아두면 좋음.
+
+
+
+
+---------------------------------------------------------------------
+#테이블 레이아웃
+
+테이블 레이아웃 내부에서 row 구분 등은 또 <TableRow> 등의 태그로 해야함.
+
+예시)
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent" >
+
+<TableRow
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content" 
+        android:layout_height="wrap_content"
+        android:text="Button1" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button2" />
+</TableRow>
+
+<TableRow
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button3" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button4" />
+</TableRow>
+</TableLayout>
+//
+
+tablerow 등의 태그도 물론 팔레트에서 찾을 수 있음.
+tablelayout 에서는 tablerow 의 hegith 를 match_parent 해도 전체를
+차지하진 않음. 레이아웃이 내용물의 형태를 어느정도 잡아주기 때문에.
+
+한 행 공간을 분할하게 하고 싶으면 
+레이아웃 속성에 android:stretchColums="대상 열"
+
+layout 파일에 xml 파일 여러개 있을 수 있으며, 그중 activity_main.xml
+가 맨 처음 켜지는 화면일 뿐이다. 
+또한 만드는 순간에 최상위 레이아웃 선택 가능.
+
+layout_span 은 테이블에서 몇 칼럼 차지할 지 결정
+layout_column 속성은 테이블에서 몇번째 칼럼에 들어갈 지 결정.
+
+ *EditText : 유저가 텍스트 수정할 수 있는 태그.
+
+
+#스크롤뷰
+
+보통 다른 언어에서는 스크롤 뷰는 별도의 위젯으로 구성하지만 안드로이드는 
+비교적 쉽게 구성
+
+길어질만한 내용이 있는 태그 영역을 그냥 scrollView 태그로 감싸주기만 
+하면 됨.
+
+
+
+
+----------------------------------------------------------------------
+#이벤트 이해하기
+
+웹 프로그래밍과 동일하게 이벤트 리스너 사용.
+그러나 여기는 onclick 같이 많이 사용되서 속성으로 되어있지 않는 이상 다른 이벤트
+들은 웹과 다른 방식으로 처리한다.
+
+
+한 이벤트는 더 세밀한 이벤트로 나뉘어지기도 함.
+클릭 이벤트를 처리하고 싶으면 OnClickListener 라는 인터페이스를 구현하는
+객체를 만든 후 버튼에 등록하면 된다. 하지만 버튼을 클릭하는 경우는 워낙 
+많아서 onClick 속성을 추가로 지원하고 있다.
+
+하지만 그 외의 이벤트 처리에서는 기본적으로 뷰 클래스를 상속한 상태에서
+(그 코드가 적힐 자바 클래스가 특정 뷰를 상속한 것일 때, 기본적으로는 최상위
+레이아웃이나 activity 일 것 같다.) 
+이벤트를 다룰 때는 원하는 대상 이벤트에 맞는 메소드를 재정의하면 된다.
+
+만약 특정 뷰 객체를 찾아서 키 이벤트를 다루고 싶으면 먼저 그 뷰 객체의
+리스너 클래스를 가져와야 한다.
+
+
+*대표적인 이벤트
+터치 이벤트, 키 이벤트, 제스처 이벤트, 포커스, 화면 방향 변경.
+
+*layout_weight 는 분할 값 속성
+
+예시)
+-  터치 이벤트
+일단 view 영역 두개와 text 영역 하나를 만들고 
+자바에서 textView 를 id 값으로 가져와 그 안에 한줄씩 글자가 출려고되
+도록 메소드 작성
+또 view 영역을 또 아이디 값 이용해 가져와서 
+
+view.setOnTouchListener(new View.OnTouchListener() { 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        int action = motionEvent.getAction();
+	
+        float curX=event.getX();
+        float curY=event.getY();
+
+        if (action == MotionEvent.ACTION_DOWN) {
+            println("손가락 눌림.");
+        } else if (action == MotionEvent.ACTION_MOVE) {
+            println("손가락 움직임.");
+        } else if (action == MotionEvent.ACTION_UP) {
+            println("손가락 뗌.");
+        }
+        return true;
+    }
+});
+
+Detector detector= new GestureDetector(this, new GestureDetector.OnGestureListener(){
+    (관련 메소드들이 알아서 뜸)
+})
+
+
+-클릭 이벤트
+
+예시) back 버튼 눌렸을때 메세지 보여주기.
+@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+       if(keyCode == KeyEvent.KEYCODE_BACK) {
+            Toast.makeText(this, "시스템 [BACK] 버튼이 눌렸습니다.", Toast.LENGTH_LONG).show();
+            return true;
+        }
+    return false;
+}
+
+*selector 에서 item 속성 예시)
+<item
+android:state_focused="true"
+android:state_pressed="true"
+android:drawable="@drawable/red" />
+//
+<item
+android:drawable="@drawable/blue" />
+
+>> 일반적인 경우에는 blue 가 보이고 상태가 맞으면 red 가 보인다.
+
+
+
+
+---------------------------------------------------------------------
+#토스트 보여주기
+
+간단한 메시지를 잠깐 보여주었다가 없어지는 뷰로 애플리케이션 위에 떠 있는
+뷰라 할 수 있음. activity 랑 별개로 존재.
+
+*onclick 이벤트 리스너는 속성으로 함수 연결 시켜도 되고 
+  직접 객체의 리스너 설정 메소드를 호출해서 설정해도 될 것이다.
+
+Toast.makeText(Context context, String message, int duration).show();
+
+예시) 
+토스트 makeText 첫번째 
+위치를 바꾸고 싶으면 show() 하기 전에 setGravity 와 setMargin 메소드 사용.
+토스트 객체에도 xml 설정 가능 !
+
+
+*스낵바는 토스트를 사용할 때와 유사하긴 하지만 아래쪽에서 잠깐 올라왔다가
+사라지는 뷰이며, 앱의 화면 안에서 보이게 된다.
+문법 상 다른 점은 make 매소드를 호출 할 때 첫 번째 파라미터가 뷰 객체.
+Snackbar.make(v, "스낵바입니다.", Snackbar.LENGTH_LONG).show();
+
+
+#알림 대화상자 보여주기
+
+*** 어떤 자동으로 어떤 메소드를 쓸때 필요한 라이브러리가 있으면 import
+해주는 기능이 있음을 잊지 말자.
+
+예시)
+버튼이 눌렸을 때 메세지를 보여주는 메소드를 호출한다고 하자.
+
+AlertDialog.Builder builder = new AlertDialog.Builder(this); 
+
+builder.setTitle("안내");
+builder.setMessage("종료하시겠습니까?");
+builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+builder.setPositiveButton("확인", new DialogInterface.OnClickListener() { 
+    public void onClick(DialogInterface dialog, int whichButton) {
+        String message = "확인 버튼이 눌렸습니다. ";
+        …중략
+
+    }
+});
+
+AlertDialog dialog = builder.create(); 
+dialog.show();
+
+
+
+
+----------------------------------------------------------------------
+#나인패치 이미지
+
+나인패치=9Patch
+
+버튼이나 텍스트 뷰의 배경으로 이미지를 설정하면 크기가 늘어날 때 일부분이
+깨져 보이는 문제를 해결하기 위해 만들어진 것으로, 
+
+원래 이미지보다 한 픽셀씩 크게 만들고 가장자리에는 늘어날 수 있는지, 안
+되는지를 색상으로 구분하여 넣어준다.
+*예를들어 파일이름이 person.9.png
+*안드로이드에서 인식할때는 R.drawable.person 으로 인식
+> 이미지를 늘릴 때 특정 부분만 늘려준다.
+
+
+#비트맵 버튼 만들기
+
+*비트맵이란 ? : 안드로이드에서 이미지를 표현하기 위해 사용되는 클래스.
+
+버튼을 상속을 해보겠다는 것.
+
+onDraw() : 화면에 보여지기 전에 내부에서 그래픽을 그리는 과정에서
+뭔가 추가하고 싶을 때 사용할 수 있도록 콜백 함수를 만들어 논것.
+onMeasure() : 크기를 결정
+
+뷰 위에 그래픽을 그리는 과정
+- 뷰에 그래픽이 그려질 때 onDraw() 메소드 호출
+- 다시 그리기는 invalidate() 메소드 사용.
+
+예시) 버튼을 상속해서 배경이미지가 보이고 눌렀을 때 다른 이미지가 되도록.
+버튼은 레이아웃이 아니라서 java 소스파일에서만 구성을 해도 된다.
+
+새 java 소스 파일을 만들어서 "생성 화면"에서 Superclass 를 
+AppCompatButton 상속
+(그냥 button 클래스도 있지만 그건 옛날 단말까지 지원 안될 수 있음.)
+
+우클릭으로 generate constructor 선택 가능. 필수 생성자는 두개.
+안드로이드는 xml 레이아웃이 java 소스파일과 분리되어 있기 때문에 
+두번째는xml 레이아웃에서 버튼을 태그로 추가해서 만들 때, 그리고 태그가 
+나중에 inflate, 메모리 객체화가 될 때의 생성자고,
+첫번째는 java 소스파일에서 그냥 생성자 호출할 때이다.
+
+두가지 다 선택하고 open 하면 자동으로 들어간다.
+
+이제 그 생성자에서 배경 이미지를 설정할 함수를 호출 
+
+*setBackgroundResource(대상 객체 id)
+*setTextSize(크기) 
+*setTextColor(Color.색)  >> 버튼 객체 클래스에서 쓰여지고 있으니 객체 지정 필요x
+
+(자바 소스코드에서는 크기 단위로 px 만 사용 가능, 그러나 res > value 
+에 dimends.xml 라는 파일을 넣어서 그 안에서
+resources 안에 설정값 적용 가능
+
+dimen 태그 예시)
+<dimen name="text_size">16dp</dimen> 
+
+이제 원래 소스코드에서는 
+getResources().getDimension(R.dimen.text_size); 형식으로 호출
+
+뷰를 상속해서 뭔가 해야할 땐
+오른쪽 마우스 버튼 generate > override methods
+
+onTouchEvent 를 가져온다. 
+지금은 버튼 객체 클래스 안에서 쓰는 코드니 바로 메소드 재정의만 하면 됨.
+
+재정의 예시)
+public boolean onTouchEvent(MotionEvent event) {
+super.onTouchEvent(event);
+
+int action = event.getAction();
+
+switch (action) {
+    case MotionEvent.ACTION_DOWN:
+        setBackgroundResource(this.iconClicked);  >> or R.drawable.(이미지 이름);
+        break;
+    case MotionEvent.ACTION_UP:
+        setBackgroundResource(this.iconNormal);
+        break;
+}
+
+invalidate();    >> 이미지 소스가 바뀐걸 새로고침하는 느낌 ? 
+		그래피그이 버튼을 다시 그린다.
+
+return true;   >> true 반환 되야 정상 적용
+}
+
+> 이제 java 에서 정의한 버튼 클래스를 xml 에서 만든 클래스 이름으로 태그를
+만든다. 여기서 "패키지 이름"까지 같이 넣어줘야 한다.
+
+
+
+
+------------------------------------------------------------------------
+#인플레이션 이해하기
+
+분리해둔 xml 레이아웃 파이르이 객체를 소스 파일에서 어떤 과정을 거져 가져오
+는 것일까 ?
+
+앱의 동작 과정 ? 
+여러 화면들이 있는 제대로 된 앱을 만들고 싶다 ?
+
+-레이아웃 인플레이션
+안드로이드의 화면은 activity 라고 부르는데 
+하나의 activity 화면은 xml 레이아웃 파일 하나와, Java 소스 코드 하나로 구성.
+
+setContentView(xml 파일 이름)
+메소드를 통해 두개의 파일 연결
+
+태그에 객체가 있을때 결국 그 객체가 화면에서 보이고 동작을 하기 위해서는
+메모리에 올라가 있어야 하는데,
+
+XML 레리아웃 파일 안에 들어있는 뷰 테그들을 이용해 시스템이 생성자 명령을
+내려 뷰 객체를 메모리에 만드는 과정이 "레이아웃 인플레이션" 이다.
+
+예시 ) setContentView 를 하기 전에 xml 객체를 가져와서 뭔갈 하려고 하면
+          오류가 난다. (아직 메모리에 들어가지 않아서)
+
+*만약 전체화면이 아닌 부분화면이라면 ? 
+> setContentView 사용 불가. 따라서 getSystemService(Context.LAYOUT_FLATER_SERVICE)
+라는 시스템 서비스를 사용해 직접 인플레이션해줘야 한다.
+
+예시) 화면에 framelayout 하나를 추가해보자.
+이제 여기에 부분 화면을 위한 뷰를 넣을 것.
+*부분 화면도 xml 하나와 java 가 하나가 있다.
+layout 경로에 서브 xml 하나를 만들고 대충 서브 화면인것을 알 수 있을 정도
+로 꾸며주자.
+* 글자의 크기를 바꿨는데 한글이 깨지는 경우는 design 화면에서 한글 폰트
+설정이 잘못되어있기 떋문. xml 에서 그 부분을 찾아서 수정하면 됨.
+
+이 서브 화면의 xml 레이아웃을 자바 소스와 1대 1 매칭시킬 수도 있고 그대로
+인플레이션 시켜서 메인 화면에 가져다 놓을수도 있다.
+> 메인 화면 자바 코드에서 컨테이너가 될 태그 객체를 가져오고 버튼이 눌렸
+을 때 getSystemService(Context.LAYOUT_FLATER_SERVICE)를 변수로 
+받아놓고 (객체선언이름).inflate(R.layout.sub1, container, true)
+>(첫번째 매개변수 xml 경로, 두번째 매개변수 대상 뷰 객체)
+
+이제 인플레이션 하고 나면 서브 페이지도 메모리에 올라왔으니
+그 안의 객체를 id 로 찾는 등의 일을 할 수 있다.
+
+*시스템 서비스란? : 안드로이드 단말기가 실행이 됐을 때, 뒤단에서 미리 실행
+		이 된 것. 
+
+
+
+
+---------------------------------------------------------------------
+# 리스트 뷰
+
+*** 대표적인 예시 : 전화번호부
+
+선택위젯 : 여러 아이템 중의 하나를 선택 
+*** 원본 데이터를 위젯에 직접 설정하지 않고 어댑터 클래스 사용 !
+
+원본 데이터가 분리되어있기 때문에 그 데이터를 관리해주는 역할을 하는게
+어댑터. 
+따라서 리스트 뷰는 껍데기 역할만 하고 어댑터에서 각각의 아이템
+으로 보여줄 뷰까지 생성을 한다. 
+리스트 뷰에 어댑터를 만든 다음에 설정을 해주면 리스트 뷰가 화면에 보여지는
+시점에 어댑터에 아이템이 몇개 있는지 물어보고 이 아이템을 위해서 뷰를 
+만들어달라고 어댑터에 요청을 한다.
+그러면 어댑터에서 getView() 메서드가 호출되고, 몇 번째 아이템을 보여달라고
+하는 건지 정보를 받고 해당하는 뷰를 리턴한다.
+
+- 리스트뷰로 보여줄 때 해야할 일
+(1) 아이템을 위한 xml 레이아웃 정의하기.
+(2) 아이템을 위한 뷰 정의하기
+(3) 어뎁터 정의하기
+(4) 리스트뷰 정의하기
+
+보통 아이템 레이아웃은 별도로 정의한다. 
+
+예시) 전화번호부의 각각의 사람을 위한 레이아웃
+이 레이아웃을 부분화면처럼 메인화면에 널 것
+아이템 레이아웃을 위한 xml 과 자바 소스코드를 하나씩 만들자. 
+
+> 최상단 relative 레이아웃으로 바꾸고
+버튼을 하나 넣자 
+그 아래를 가득채우게 listView 뷰를 넣는다.
+   
+자바 소스에서 페이지 열리면 listView 객체를 찾도록 하고 
+어댑터 클래스를 정의해서 BaseAdapter 를 상속받도록 정의를 한다.
+이제 generate > implement method 하면 몇가지 메소드 형식이 자동 생성
+(어뎁터로써 필수적으로 정의해줘야 하는 메소드 ?)
+
+클래스 안에 데이터를 관리할 객체를 선언하기위해 java 소스를 하나 더 만든다.
+(데이터 종류가 많을 경우 배열로만 관리하기 힘듬.)
+(데이터 변수와 생성자, 데이터를 get 하거나 set 하는 함수 정도 포함)
+>이제 이 객체 배열을 선언하면 됨.
+
+배열 이름을 items 라고 했다 치면
+
+자동 생성된 메소드 중
+getCount : items.size()  리턴
+getItem : items.get(position) (객체) 리턴
+getItemId : position 이나 지정된 id
+getView : 데이터를 원하는 형태로 리턴해준다. 
+
+
+이제 하나의 아이템으로 보일 새로운 xml 파일을 layout 경로에 만들어서 
+미리화면이 보이기는 전체화면으로 보이지만 실제로는 하나의 아이템 화면
+
+> 리니어 레이아웃 가로방향으로 바꿔서 적당히 이미지 하나와 그 안에 또 
+수직 리니어 레이아웃으로 이름, 전화번호 정도 표시.
+(기본 안드로이드 이미지 가져오는 곳은 android:src="@mipmap/ic_lancher")
+(adroid:textColor="@color/colorPrimaryDark" 형식으로 색상 지정)
+마지막으로 최상위 레이아웃 wrap_content 로.
+
+또 아이템 화면을 위한 자바를 xml 파일의 최상위 레이아웃을 상속해서 생성
+한다. 또 생성자 만들고 추가로 만든 init 메소드에서 xml 을 인플레이션해서
+붙여준다. 여기는 메인 페이지가 아니니까 system service 사용.
+(인플레이터 객체 이름).inflate(R.layout.singer_item, this, true)
+그럼 이제부터 여기서 아이템 xml 내용 참조 가능하고 여기서 item xml 을
+다룰 수 있는 인터페이스 함수 (ex- setName() 만들어 이름 영역 수정 가능
+하게 하기.) 만들어둔다.
+
+
+메인 자바의 어댑터 getView 메소드에서 
+SingerItemView view=new SingerItemView(getApplicationContexet)
+> TextView textView = (TextView) findViewById() 로 변수 특정 뷰를 담는 것
+처럼 여기서 아이템을 위한 xml 를 만들면서 같이 java 파일로 SingeritemView
+(xml 파일의 최상위 레이아웃 상속) 클래스를 만들었으니 일를 변수에 가져올 
+수 있는것.
+
+가져왔으면 
+SingerItem item=  items.get(position); (배열 중 그 인덱스의 item 객체 담김)
+view.setName(item.getName());
+view.setMobile(item.getMobile());
+
+return view;
+
+// 어뎁터 정의 완료
+
+데이터 추가는 어떻게 ? 
+> 어뎁터에 데이터 추가 메소드도 만들어 주자. 
+public void addItem(SingerItem item){
+    items.add(item);
+}
+
+//데이터 추가하고 어댑터를 listView 에 적용 (메인 자바 소스 onCreate 에서)
+(어댑터 객체 이름).addItem(아이템 객체. 이미 있는거 or new 로 생성해서)
+으로 원하는 만큼 데이터 입력
+listView.setAdapter(어댑터 객체 이름)
+
+> 그럼 이제 리스트 뷰가 어댑터를 알게 되서 이 리스트 뷰가 화면에 보일 때
+   어댑터한데 getCount 를 호출하면서 몇 개있냐 물어보고 getView 를 갯수
+   만큼 해서 화면에 보여주게 되는 것이다.
+
+여기서 이미지까지 설정할 수 있게 하고 싶을때 R.drawable.icom01
+형태로 경로를 넘겨주면 int 값으로 인식한다 ?
+
+
+// 특정 아이템을 클릭했을때 이벤트 처리
+어뎁터 새팅 다음에 listView.setOnItemClickListener()
+그냥 일반 객체에 리스너 설정 할때는 setClickListener 인데 메소드 명에
+OnItem 이 추가된다고 생각하면 된다. 매개변수는 기본 리스너 설정법과
+비슷하지만 매개변수 안에서 설정을 할때 외부의 지역변수인 어댑터 객체를
+참조를 못하니 전역 변수로 바꿔줘야 한다.
+
+이제  onItemClick 의 매개변수로 position 을 받을 수 있고 그 안에
+SingerItem item= (SingerItem) adapter.getItem(position);
+가능
+
+// 새로운 데이터 앱 화면에서 입력받기
+버튼의 클릭 리스너 코드에
+String name = editText.getText().toString();
+String mobile = editText2.getText().toString();
+adapter.addItem(new SingerItem(name, mobile, R.drawable.icon01))
+adapter.notifyDataSetChanged(); (리스트 뷰 갱신해야하는데 , 리스트가 
+)
+
+*제대로 이해했는지 확인하려면 예제에 요소 하나 더 추가해보면 됨.
+
+*** 예시 코드 https://lktprogrammer.tistory.com/163
+                     https://webnautes.tistory.com/1020
+*** 이 예제에서 SingerItemView 와 SingerItem 구분 잘 하자.
+*** 최근 실무에서는 리스트뷰보다는 리사이클러뷰(RecyclerView) 을 많이
+사용한다. 다만 리스트뷰에 대한 내용의 이해가 리사이클러뷰를 만들 때도
+기본이 된다.
+***실무에서는 천 개의 아이템이 들어있다고 해도 제대로 보여줄수 있어야 하므로
+이 강의의 예제의 어뎁터에서처럼 getView 하면 메모리를 너무 많이 쓸 것이다.
+때문에 "재사용" 을 해야함.
+화면에 보이는 게 열 몇개정도라고 치면, 그보다 조금더 많이 만들고 화면에 안보이는 것들은 
+재사용을 해서 new 로 만들 필요 없게 하는 것. 재사용 할 수 있도록 convertView 를 getView
+에서 받는다.
+
+
+# 스피너 사용하기.
+
+리스트 뷰처럼 어뎁터 사용
+*어뎁터 패턴 : 어뎁터를 사용하는 패턴
+
+예시) 한 박스를 터치하면 여러가지 보기중에 선택할수 있도록 하는 것.
+> 사실 두가지 레이아웃이 하나로 이루어져 있는 것.
+아이템이 텍스트로만 되어 있는 경우는 기본 어뎁터를 쓰는 것도 좋은 방법임.
+
+#스피너에서 선택한 아이템이 텍스트 뷰에 보이도록 만들어 볼 것.
+스피너 또한 팔레트에서 기본 틀을 찾을 수 있다. 
+
+oncreate 실행되면 텍스트뷰와 스피너를 얻어오고, 기본 어뎁터를 사용
+ArrayAdapter<String> = new ArrayAdapter<String>(
+	this, android.R.layout.simple_spinner_item, items);
+<> 안에 들어가는 건 데이터 형식.
+this 는 컨텍스트 객체
+스피너의 레이아웃을 잡아줄 수 있는데, android.R.layout.simple_spinner_item
+과 같이 기본 안드로이드 api 를 이용해 형식으로 레이아웃 형식도 불러올 수 있음.
+items 는 데이터 초기화.
+
+adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+스피너를 선택했을때 보이는 창 지정
+
+spinner.setAdapter(adapter);
+리스트뷰에 어뎁터 붙여주던 것처럼 어뎁터 추가.
+
+spinner.setOnItemSelectedListener 에서 아이템이 선택되었을때 이벤트 지정 가능.
+
+*아이템이 텍스트로만 이루어져 있을때 ArrayAdapter 를 쓰면 간편하다.
+ 여러가지 데이터를 가질 때도 쓸 수 있긴하지만 직접 지정해서 쓰는게 코드 관리에 있어
+ 오히려 더 편할수도 있음.
+
+
+
+#그리드 뷰
+
+리스트 뷰와 마찬가지로 선택 위젯이라 많이 비슷함.
+차이점은 형태가 격자라는 것. 
+열만 있던 리스트 뷰에서 이제 행까지 생긴다는 것.
+
+그리드 뷰 또한 팔레트에서 기본 틀을 가져올 수 있으면 추가하는 순간 기본 틀 이미지가 나타남. 
+열의 갯수는 numColums 속성에서조절 가능.
+이것 빼고는 어차피 똑같은 어뎁터 패턴을 사용하기 때문에 리스트 뷰랑 모양만 다른 수준.
+
+# 예시
+oncreate 에서 그리드 뷰를 객체로 얻어오고 어뎁터와 클래스 등은 리스트 뷰 예제에서 썼던 
+것 재활용하고 listView 새팅하던 부분만 그대로 gridView 로 바꾸면 됨. 
+
+그리드 뷰 격자에서 데이터 보이는 순서는 가로 > 세로
+
+
+
+* 경로에서 레이아웃에 넣는 것과 드로어블에 넣는 것의 정확한 용도 차이 :
+
+드로어블 리소스는 화면에 그릴 수 있으며 getDrawable(int)와 같은 API를 사용하여 
+가져오거나 android:drawable 및 android:icon과 같은 특성을 사용하여 다른 XML 리소스에
+적용할 수 있는 "그래픽"에 대한 일반적인 개념입니다. 
+
+레이아웃 리소스는 활동의 UI 또는 UI 구성요소의 아키텍처를 정의합니다.
+파일 위치:
+res/layout/filename.xml
+파일 이름이 리소스 ID로 사용됩니다.
+
+컴파일된 리소스 데이터 유형:
+View(또는 서브클래스) 리소스를 가리키는 리소스 포인터입니다.
+
+리소스 참조:
+자바: R.layout.filename
+XML: @[package:]layout/filename
+
+
+
+>>>
+
+
+
+
+
